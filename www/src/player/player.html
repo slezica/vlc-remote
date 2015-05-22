@@ -1,4 +1,4 @@
-<ion-view id="home">
+<ion-view id="player">
 <ion-content>
 
   <ul class="list">
@@ -9,8 +9,6 @@
           Artist {{ player.clip.artist }}
       </li>
   </ul>
-
-  {{ player.time }} seconds of {{ clip.length }}
 
   <row>
     <div class="button-bar">
@@ -25,7 +23,7 @@
     <div class="range col-80">
       <input type="range" name="time" min="0" max="{{ player.clip.length }}" ng-model="player.time" ng-change="player.seek(player.time)">
     </div>
-    <span href="" class="button button-block col">{{ player.time | formatTime }}</span>
+    <span href="" class="button button-block col-20">{{ player.time | formatTime }}</span>
   </div>
 
   <div class="row">
@@ -35,7 +33,7 @@
       </a>
     </div>
 
-    <div class="range">
+    <div class="range col-50">
       <i class="icon ion-volume-low"></i>
       <input type="range" name="volume">
       <i class="icon ion-volume-high"></i>

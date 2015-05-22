@@ -68,3 +68,10 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
       @timeout.cancel()
 
   return { connect: (config) -> new Player(config) }
+
+
+app.controller 'playerCtrl', ($scope, $vlc) ->
+  $scope.player = player = $vlc.connect
+    address : 'localhost:8100/api'
+    username: ''
+    password: '1'
