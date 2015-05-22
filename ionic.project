@@ -1,4 +1,11 @@
 {
   "name": "vlc-remote",
-  "app_id": ""
+  "app_id": "",
+  "sass": true,
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:8080"
+    }
+  ]
 }

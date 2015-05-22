@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var plumber = require('gulp-plumber');
 var gutil = require('gulp-util');
 var bower = require('bower');
 var concat = require('gulp-concat');
@@ -6,12 +7,16 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var coffee = require('gulp-coffee');
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: ['./scss/**/*.scss'],
+  coffee: ['./www/**/*.coffee']
 };
 
-gulp.task('default', ['sass']);
+
+gulp.task('default', ['sass', 'coffee']);
+
 
 gulp.task('sass', function(done) {
   gulp.src('./scss/ionic.app.scss')
@@ -27,9 +32,24 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
+
+gulp.task('coffee', function(done) {
+  gulp.src(paths.coffee)
+    .pipe(plumber())
+    .pipe(coffee({bare: false})
+    .on('error', gutil.log.bind(gutil, 'Coffee Error')))
+    .pipe(concat('app.js'))
+    .pipe(gulp.dest('./www/gen'))
+    .on('end', done)
+  ;
+})
+
+
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.coffee, ['coffee']);
 });
+
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
@@ -37,6 +57,7 @@ gulp.task('install', ['git-check'], function() {
       gutil.log('bower', gutil.colors.cyan(data.id), data.message);
     });
 });
+
 
 gulp.task('git-check', function(done) {
   if (!sh.which('git')) {

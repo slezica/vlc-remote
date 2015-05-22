@@ -1,0 +1,46 @@
+<ion-view id="home">
+<ion-content>
+
+  <ul class="list">
+      <li class="item">
+          Title {{ player.clip.title }}
+      </li>
+      <li class="item">
+          Artist {{ player.clip.artist }}
+      </li>
+  </ul>
+
+  {{ player.time }} seconds of {{ clip.length }}
+
+  <row>
+    <div class="button-bar">
+      <a ng-click="player.previous()" class="button icon ion-ios-skipbackward"></a>
+      <a ng-click="player.seek('-10')" class="button icon ion-skip-backward"></a>
+      <a ng-click="player.seek('+10')" class="button icon ion-skip-forward"></a>
+      <a ng-click="player.next()" class="button icon ion-ios-skipforward"></a>
+    </div>
+  </row>
+
+  <div class="row">
+    <div class="range col-80">
+      <input type="range" name="time" min="0" max="{{ player.clip.length }}" ng-model="player.time" ng-change="player.seek(player.time)">
+    </div>
+    <span href="" class="button button-block col">{{ player.time | formatTime }}</span>
+  </div>
+
+  <div class="row">
+    <div class="button-bar col-50">
+      <a ng-click="player.toggle()"
+        class="col button icon {{ player.state !== 'playing' ? 'ion-play button-balanced' : 'ion-pause button-energized' }}">
+      </a>
+    </div>
+
+    <div class="range">
+      <i class="icon ion-volume-low"></i>
+      <input type="range" name="volume">
+      <i class="icon ion-volume-high"></i>
+    </div>
+  </div>
+
+</ion-content>
+</ion-view>
