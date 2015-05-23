@@ -38,3 +38,15 @@ a.help {
   margin-left: 10px;
   font-size: 20px;
 }
+
+ion-content.center-content .scroll {
+  display: table !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.center-content .content {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}

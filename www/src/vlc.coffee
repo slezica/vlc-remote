@@ -37,38 +37,45 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
 
     request: (endpoint, params) ->
       $http.get(@address + '/requests/' + endpoint, { params })
-      .then (res) =>
+      .then (res) ->
         return res.data
 
-    command: (name, params) ->
-      @request("status.json?command=#{name}", params).then @refresh.bind(@)
+      .catch (err) ->
+        throw 'HTTP Error: ' + JSON.stringify(err, null, 2)
 
-    refresh: ->
+    command: (name, params) ->
+      if not @connected
+        throw new Error("Not connected to VLC")
+
+      @request("status.json?command=#{name}", params).then => @ping()
+
+    ping: ->
       @request('status.json')
         .then (res) =>
           @_set_status(res)
-          return
 
         .catch (err) =>
           @disconnect()
-          throw JSON.stringify(err, null, 2)
+          throw err
 
     connect: (address) ->
+      @disconnect()
       @address = address
 
-      @refresh().then =>
+      @ping().then =>
         @connected = true
-        @timer = $interval @refresh.bind(@), 1000
+        @timer = $interval @ping.bind(@), 1000
         return # careful, @timer is a Promise
 
     reconnect: ->
       @connect(@address)
 
     disconnect: ->
-      @connected = false
-      $interval.cancel(@timer) if @timer?
-      delete @timer
-      @emit('disconnected')
+      if @connected?
+        @connected = false
+        $interval.cancel(@timer)
+        delete @['timer']
+        @emit('disconnected')
 
     # Commands:
     play      : -> @command('pl_play')
@@ -90,4 +97,4 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
       @command('volume', { val: level })
 
 
-  return new Player
+  return window.player = new Player

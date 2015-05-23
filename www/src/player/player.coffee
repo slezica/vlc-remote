@@ -22,15 +22,21 @@ app.controller 'playerCtrl', ($scope, $state, $stateParams, $timeout, $ionicLoad
 
     attempt()
 
-  leave = ->
+  disconnect = ->
     player.disconnect()
-    $state.go('connect')
 
-  player.on('disconnected', connect)
+  $scope.leave = ->
+    $scope.leaving = true
+    disconnect()
 
-  $ionicPlatform.on('pause', -> player.disconnect())
-  $ionicPlatform.on('resume', connect)
+  # $scope.$on '$destroy', ->
+  #   console.log('destroy called')
+  #
+  # player.on 'disconnected', ->
+  #   connect() if not $scope.leaving
 
-  $ionicPlatform.onHardwareBackButton(leave)
+  $ionicPlatform.on 'resume', -> connect()
+  $ionicPlatform.on 'pause', -> disconnect()
+  $ionicPlatform.onHardwareBackButton -> $state.go('connect')
 
   connect()
