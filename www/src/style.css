@@ -19,3 +19,22 @@ a.help {
   font-size: 90%;
   font-style: italic;
 }
+
+#player .info {
+  background: #222;
+  padding: 20px;
+}
+
+#player .info * {
+  color: white;
+}
+
+#player .info .title {
+  font-size: 25px;
+  white-space: nowrap;
+}
+
+#player .info .time {
+  margin-left: 10px;
+  font-size: 20px;
+}

@@ -1,9 +1,14 @@
 <ion-view id="player">
-<ion-content class="row">
+
+<ion-content>
+
+  <div class="info">
+      <h1 class="title">{{ player.clip.title }}</h1>
+      <h2 class="time">{{ player.clip.length | formatTime }}</h2>
+  </div>
 
   <div class="button-bar">
-    <span class="button button-block col-50">{{ player.time | formatTime }}</span>
-    <span class="button button-block col-50">{{ player.clip.length | formatTime }}</span>
+        <span class="button button-block col-50">{{ player.time | formatTime }}</span>
   </div>
 
   <div class="range">
@@ -26,9 +31,5 @@
   <a ng-click="player.toggle()"
     class="button button-block icon {{ player.state !== 'playing' ? 'ion-play button-balanced' : 'ion-pause button-energized' }}">
   </a>
-
-  <ul class="list">
-      <li class="item">{{ player.clip.title }}</li>
-  </ul>
 </ion-content>
 </ion-view>

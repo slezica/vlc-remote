@@ -51,7 +51,7 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
 
         .catch (err) =>
           @disconnect()
-          throw err
+          throw JSON.stringify(err, null, 2)
 
     connect: (address) ->
       @address = address

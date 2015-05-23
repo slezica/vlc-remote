@@ -1,4 +1,4 @@
-app.controller 'playerCtrl', ($scope, $stateParams, $vlc, $timeout, $ionicLoading) ->
+app.controller 'playerCtrl', ($scope, $state, $stateParams, $timeout, $ionicLoading, $ionicPlatform, $vlc) ->
   $scope.player = player = $vlc
 
   connect = ->
@@ -22,5 +22,15 @@ app.controller 'playerCtrl', ($scope, $stateParams, $vlc, $timeout, $ionicLoadin
 
     attempt()
 
+  leave = ->
+    player.disconnect()
+    $state.go('connect')
+
   player.on('disconnected', connect)
+
+  $ionicPlatform.on('pause', -> player.disconnect())
+  $ionicPlatform.on('resume', connect)
+
+  $ionicPlatform.onHardwareBackButton(leave)
+
   connect()

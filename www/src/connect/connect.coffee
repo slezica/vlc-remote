@@ -1,6 +1,6 @@
 app.controller 'connectCtrl', ($scope, $state) ->
   $scope.form =
-    host    : 'ionic-proxy'
+    host    : '192.168.1.100' #'ionic-proxy'
     port    : 8080
     username: ''
     password: '1'
