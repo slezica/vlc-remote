@@ -1,44 +1,41 @@
 <ion-view id="player">
-<ion-content>
+<ion-content class="row">
+  <div ng-if="! player.connected" class="spinner row">
+    <div class="col col-center">
+      <ion-spinner class=""></ion-spinner>
+    </div>
+  </div>
 
-  <ul class="list">
-      <li class="item">
-          Title {{ player.clip.title }}
-      </li>
-      <li class="item">
-          Artist {{ player.clip.artist }}
-      </li>
-  </ul>
+  <div ng-if="player.connected">
+    <div class="button-bar">
+      <span class="button button-block col-50">{{ player.time | formatTime }}</span>
+      <span class="button button-block col-50">{{ player.clip.length | formatTime }}</span>
+    </div>
 
-  <row>
+    <div class="range">
+      <input type="range" name="time" min="0" max="{{ player.clip.length }}" ng-model="player.time" ng-change="player.seek(player.time)">
+    </div>
+
     <div class="button-bar">
       <a ng-click="player.previous()" class="button icon ion-ios-skipbackward"></a>
       <a ng-click="player.seek('-10')" class="button icon ion-skip-backward"></a>
       <a ng-click="player.seek('+10')" class="button icon ion-skip-forward"></a>
       <a ng-click="player.next()" class="button icon ion-ios-skipforward"></a>
     </div>
-  </row>
 
-  <div class="row">
-    <div class="range col-80">
-      <input type="range" name="time" min="0" max="{{ player.clip.length }}" ng-model="player.time" ng-change="player.seek(player.time)">
-    </div>
-    <span href="" class="button button-block col-20">{{ player.time | formatTime }}</span>
-  </div>
-
-  <div class="row">
-    <div class="button-bar col-50">
-      <a ng-click="player.toggle()"
-        class="col button icon {{ player.state !== 'playing' ? 'ion-play button-balanced' : 'ion-pause button-energized' }}">
-      </a>
-    </div>
-
-    <div class="range col-50">
+    <div class="range">
       <i class="icon ion-volume-low"></i>
       <input type="range" name="volume">
       <i class="icon ion-volume-high"></i>
     </div>
+
+    <a ng-click="player.toggle()"
+      class="button button-block icon {{ player.state !== 'playing' ? 'ion-play button-balanced' : 'ion-pause button-energized' }}">
+    </a>
   </div>
 
+  <ul class="list">
+      <li class="item">{{ player.clip.title }}</li>
+  </ul>
 </ion-content>
 </ion-view>

@@ -1,0 +1,8 @@
+a.help {
+  display: block;
+  text-align: center;
+}
+
+ion-content > .scroll {
+  min-height: 100%;
+}

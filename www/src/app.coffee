@@ -3,12 +3,17 @@ window.app = angular.module('vlc-remote', ['ionic', 'base64'])
 
 app.config ($stateProvider, $urlRouterProvider) ->
   $stateProvider
+    .state 'connect',
+      url        : '/connect'
+      templateUrl: 'src/connect/connect.html'
+      controller : 'connectCtrl'
+
     .state 'player',
-      url        : '/player'
+      url        : '/player?address'
       templateUrl: 'src/player/player.html'
       controller : 'playerCtrl'
 
-  $urlRouterProvider.otherwise('/player')
+  $urlRouterProvider.otherwise('/connect')
 
 
 window.set = (object, attr) ->

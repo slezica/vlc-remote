@@ -1,13 +1,12 @@
 app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
   class Player
-    constructor: ({ @address, @username, @password }) ->
-      @root   = "http://#{@username}:#{@password}@#{@address}/requests/"
+    constructor: ->
+      @address   = null
+      @connected = false
+
       @status =
         clip  : null
         player: null
-
-      @refresh()
-      @timeout = $interval @refresh.bind(@), 1000
 
       @scope = $rootScope.$new()
 
@@ -16,15 +15,19 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
         handler(args...)
 
     request: (endpoint, params) ->
-      $http.get(@root + endpoint, { params })
-        .then get('data')
+      $http.get(@address + '/requests/' + endpoint, { params })
+      .then (res) =>
+        return res.data
+
+      .catch (err) =>
+        @disconnect()
 
     command: (name, params) ->
       @request("status.json?command=#{name}", params).then @refresh.bind(@)
 
-
     refresh: ->
       @request('status.json').then (res) =>
+        console.log @
         _.extend(@,
           clip:
             title : res.information?.category?.meta?.title
@@ -64,7 +67,20 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
       # level can be like '+3', '-3', '10' or '10%'
       @command('volume', { val: level })
 
-    disconnect: ->
-      @timeout.cancel()
+    connect: (address) ->
+      @address = address
+      @reconnect()
 
-  return { connect: (config) -> new Player(config) }
+    reconnect: ->
+      @disconnect()
+      @refresh().then =>
+        @connected = true
+        @timer = $interval @refresh.bind(@), 1000
+
+    disconnect: ->
+      @connected = false;
+      @timer.cancel() if @timer?
+      delete @timer
+
+
+  return new Player

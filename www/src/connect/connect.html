@@ -1,0 +1,31 @@
+<ion-view id="connect">
+<ion-content class="row">
+
+  <div class="list">
+    <label class="item item-input">
+      <span class="input-label">Host</span>
+      <input ng-model="form.host" type="text" placeholder="Eg 192.168.0.100">
+    </label>
+
+    <label class="item item-input">
+      <span class="input-label">Port</span>
+      <input ng-model="form.port" type="text" value="8080">
+    </label>
+
+    <label class="item item-input">
+      <span class="input-label">Username</span>
+      <input ng-model="form.username" type="text" >
+    </label>
+
+    <label class="item item-input">
+      <span class="input-label">Password</span>
+      <input ng-model="form.password" type="text" >
+    </label>
+  </div>
+
+  <a ng-click="connect()" class="button button-block button-balanced">Connect</a>
+
+  <a href="#/help" class="help">Need help setting this up?</a>
+
+</ion-content>
+</ion-view>
