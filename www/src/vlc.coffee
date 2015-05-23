@@ -10,43 +10,65 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
 
       @scope = $rootScope.$new()
 
+    _set_status: (status) ->
+      _.extend @,
+        clip:
+          title : status.information?.category?.meta?.title
+          artist: status.information?.category?.meta?.artist
+          length: status.length
+
+        state : status.state
+        time  : status.time
+        volume: status.volume
+
+        fullscreen_on: status.fullscreen
+        random_on    : status.random
+        repeat_on    : status.repeat
+        loop_on      : status.loop
+
+      @emit('change')
+
     on: (event, handler) ->
       @scope.$on event, (event, args...) ->
         handler(args...)
+
+    emit: (event, data) ->
+      @scope.$broadcast(event, data)
 
     request: (endpoint, params) ->
       $http.get(@address + '/requests/' + endpoint, { params })
       .then (res) =>
         return res.data
 
-      .catch (err) =>
-        @disconnect()
-
     command: (name, params) ->
       @request("status.json?command=#{name}", params).then @refresh.bind(@)
 
     refresh: ->
-      @request('status.json').then (res) =>
-        console.log @
-        _.extend(@,
-          clip:
-            title : res.information?.category?.meta?.title
-            artist: res.information?.category?.meta?.artist
-            length: res.length
+      @request('status.json')
+        .then (res) =>
+          @_set_status(res)
+          return
 
-          state : res.state
-          time  : res.time
-          volume: res.volume
+        .catch (err) =>
+          @disconnect()
+          throw err
 
-          fullscreen_on: res.fullscreen
-          random_on    : res.random
-          repeat_on    : res.repeat
-          loop_on      : res.loop
-        )
+    connect: (address) ->
+      @address = address
 
-        @scope.$broadcast('change')
-        return @
+      @refresh().then =>
+        @connected = true
+        @timer = $interval @refresh.bind(@), 1000
+        return # careful, @timer is a Promise
 
+    reconnect: ->
+      @connect(@address)
+
+    disconnect: ->
+      @connected = false
+      $interval.cancel(@timer) if @timer?
+      delete @timer
+      @emit('disconnected')
 
     # Commands:
     play      : -> @command('pl_play')
@@ -66,21 +88,6 @@ app.factory '$vlc', ($http, $base64, $interval, $rootScope) ->
     volume: (level) ->
       # level can be like '+3', '-3', '10' or '10%'
       @command('volume', { val: level })
-
-    connect: (address) ->
-      @address = address
-      @reconnect()
-
-    reconnect: ->
-      @disconnect()
-      @refresh().then =>
-        @connected = true
-        @timer = $interval @refresh.bind(@), 1000
-
-    disconnect: ->
-      @connected = false;
-      @timer.cancel() if @timer?
-      delete @timer
 
 
   return new Player

@@ -16,9 +16,9 @@ app.config ($stateProvider, $urlRouterProvider) ->
   $urlRouterProvider.otherwise('/connect')
 
 
-window.set = (object, attr) ->
+window.set = (object, attr, overrideValue) ->
   (value) ->
-    object[attr] = value
+    object[attr] = if overrideValue isnt undefined then overrideValue else value
     return value
 
 window.get = (attr) ->

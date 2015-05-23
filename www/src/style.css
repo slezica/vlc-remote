@@ -3,6 +3,19 @@ a.help {
   text-align: center;
 }
 
-ion-content > .scroll {
+/*ion-content > .scroll {
   min-height: 100%;
+}*/
+
+#loading ion-spinner {
+  margin: auto;
+}
+
+#loading h1 {
+  font-size: 100%;
+}
+
+#loading h2 {
+  font-size: 90%;
+  font-style: italic;
 }
