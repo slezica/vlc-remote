@@ -39,14 +39,30 @@ a.help {
   font-size: 20px;
 }
 
-ion-content.center-content .scroll {
+#connect ion-content > .scroll {
   display: table !important;
   width: 100% !important;
   height: 100% !important;
 }
 
-.center-content .content {
+.align-middle {
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+
+#player .controls {
+  padding: 0 10px;
+}
+
+#player .play {
+  height: 70px;
+  line-height: 70px;
+  padding-top: 13px;
+
+  margin: 20px 0;
+}
+
+#player .play:before {
+  font-size: 38px;
 }

@@ -1,42 +1,29 @@
 app.controller 'playerCtrl', ($scope, $state, $stateParams, $timeout, $ionicLoading, $ionicPlatform, $vlc) ->
-  $scope.player = player = $vlc
+  $scope.vlc = $vlc
 
   connect = ->
-    return if $scope.connecting
-    $scope.connecting = { attempts: 0 }
-
     $ionicLoading.show
       scope            : $scope
       templateUrl      : 'src/player/loading.html'
       hideOnStateChange: true
 
-    attempt = ->
-      $scope.connecting.attempts += 1
-      player.connect($stateParams.address)
-        .then ->
-          delete $scope.connecting
-          $ionicLoading.hide()
-
-        .catch (err) ->
-          $timeout(attempt, 1000)
-
-    attempt()
+    $vlc.connect($stateParams.address).then ->
+      $ionicLoading.hide()
 
   disconnect = ->
-    player.disconnect()
+    $ionicLoading.hide()
+    $vlc.disconnect()
 
-  $scope.leave = ->
-    $scope.leaving = true
+  $vlc.on('disconnect', connect)
+
+  leave = ->
     disconnect()
+    $state.go('connect')
 
-  # $scope.$on '$destroy', ->
-  #   console.log('destroy called')
-  #
-  # player.on 'disconnected', ->
-  #   connect() if not $scope.leaving
+  $ionicPlatform.on('pause', disconnect)
+  $ionicPlatform.on('resume', connect)
+  $ionicPlatform.onHardwareBackButton ->
+    leave()
 
-  $ionicPlatform.on 'resume', -> connect()
-  $ionicPlatform.on 'pause', -> disconnect()
-  $ionicPlatform.onHardwareBackButton -> $state.go('connect')
-
-  connect()
+  if $vlc.connection.status isnt 'connected'
+    connect()
